@@ -1,7 +1,7 @@
 #!/bin/bash
 
 scan_dir() {
-    local DIR EXT 
+    local DIR exts 
     local cnt=0
     local total_cnt=0
 
@@ -14,17 +14,19 @@ scan_dir() {
         fi
     done
 
-    read -r -p "Enter extension for which to perform a script (py | cpp | pdf): " EXT
-
-    while IFS= read -r -d '' f; do
-        ((cnt++))
-        lines_cnt=$(wc -l < "$f")
-        total_cnt=$((total_cnt + lines_cnt))
-        printf "For found file %s total lines: %d\n" "$f" "$lines_cnt"
-    done < <(find "$DIR" -type f -name "*.$EXT" -print0)
+    read -r -p "Enter extension for which to perform a script (py | cpp | pdf): " exts
+    for EXT in $exts; do
+        while IFS= read -r -d '' f; do
+            ((cnt++))
+            lines_cnt=$(wc -l < "$f")
+            total_cnt=$((total_cnt + lines_cnt))
+            printf "For found file %s total lines: %d\n" "$f" "$lines_cnt"
+        done < <(find "$DIR" -type f -name "*.$EXT" -print0)
+    done
 
     echo "Total files found: $cnt"
     echo "Total lines found: $total_cnt"
 }
+
 
 scan_dir
